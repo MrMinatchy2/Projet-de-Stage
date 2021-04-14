@@ -71,7 +71,7 @@ class Fenetre(QWidget):
         for i in range(9):
             self.LigneLayout[i].setContentsMargins(68,9,9,9)
             
-    def toliste(self):
+    def toListe(self):
         liste=[]
         for i in range(9):
             liste.append([])
@@ -105,6 +105,7 @@ for i in range(9):
         l[i].append(str(random.randint(0,9)))
 fen.toGrille(l)
 fen.reInput()
+print(fen.toListe())
 fen.show()
 
 app.exec_()
