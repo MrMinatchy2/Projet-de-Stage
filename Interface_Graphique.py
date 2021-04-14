@@ -1,16 +1,35 @@
 import sys
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
 
 class Fenetre(QWidget):
     def __init__(self):
         QWidget.__init__(self)
         self.setWindowTitle("Résolveur de Sudoku")
+
+def Test(text):
+
+        font = text.document().defaultFont()
+        fontMetrics = QFontMetrics(font)
+        textSize = fontMetrics.size(0, text.toPlainText())
+
+        w = textSize.width() + 10
+        h = textSize.height() + 10
+        text.setMinimumSize(w, h)
+        text.setMaximumSize(w, h)
+        text.resize(w, h)
+
+
 app = QApplication.instance()
 if not app:
     app = QApplication(sys.argv)
 
 
+def refresh(x,y):
+    for i in range(9):
+        for j in range(9):
+            x[i*9+j].setText(y[i*9+j].toPlainText())
 fen = Fenetre()
 fen.resize(800,800)
 WGrids= []
@@ -51,13 +70,13 @@ for i in range(9):
     for j in range(9):
         Grille.append(QLabel("0"))
         Grille1.append(QTextEdit())
-        Grille1[i*9+j].resize(1,1)
+        Grille1[i*9+j].setText("0")
+        Test(Grille1[i*9+j])
         LigneLayout[i].addWidget(Grille[i*9+j])
         Ligne1Layout[i].addWidget(Grille1[i*9+j])
 for i in range(9):
     WGridsLayout[0].addWidget(Lignes[i])
     WGridsLayout[1].addWidget(Lignes1[i])
-
 fen.show()
 
 app.exec_()
