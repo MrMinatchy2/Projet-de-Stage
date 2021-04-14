@@ -83,7 +83,11 @@ class Fenetre(QWidget):
         for i in range(9):
             for j in range(9):
                 self.Grille[9*i+j].setText(liste[i][j])
-                
+
+    def reInput(self):
+        for i in range(9):
+            for j in range(9):
+                self.Grille1[9*i+j].setText(self.Grille[9*i+j].text())
 app = QApplication.instance()
 if not app:
     app = QApplication(sys.argv)
@@ -94,6 +98,13 @@ def refresh(x,y):
         for j in range(9):
             x[i*9+j].setText(y[i*9+j].toPlainText())
 fen = Fenetre()
+l=[]
+for i in range(9):
+    l.append([])
+    for j in range(9):
+        l[i].append(str(random.randint(0,9)))
+fen.toGrille(l)
+fen.reInput()
 fen.show()
 
 app.exec_()
