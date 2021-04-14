@@ -2,42 +2,75 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
-WGrids= []
-WGridsLayout= []
-Lignes= []
-Grille= []
-LigneLayout= []
-Lignes1 = []
-Grille1= []
-Ligne1Layout= []
-layout = QHBoxLayout()
-layouts= []
-Panel = []
-class Fenetre(QWidget):
-    def __init__(self):
-        QWidget.__init__(self)
-        self.setWindowTitle("Résolveur de Sudoku")
-        
-def Test(text):
-        font = text.document().defaultFont()
-        fontMetrics = QFontMetrics(font)
-        textSize = fontMetrics.size(0, text.toPlainText())
-        
-        w = textSize.width() + 10
-        h = textSize.height() + 10
-        text.setMinimumSize(w, h)
-        text.setMaximumSize(w, h)
-        text.resize(w, h)
-
 class Text(QTextEdit):
     def __init__(self):
         QTextEdit.__init__(self)
         self.setText("0")
         self.setFocusPolicy(Qt.StrongFocus)
-        Test(self)
+        font = self.document().defaultFont()
+        fontMetrics = QFontMetrics(font)
+        textSize = fontMetrics.size(0, self.toPlainText())
+
+        w = textSize.width() + 10
+        h = textSize.height() + 10
+        self.setMinimumSize(w, h)
+        self.setMaximumSize(w, h)
+        self.resize(w, h)
     def keyPressEvent(self, event):
         QTextEdit.keyPressEvent(self,event)
-        refresh(Grille,Grille1)
+        refresh(fen.Grille,fen.Grille1)
+
+class Fenetre(QWidget):
+    WGrids= []
+    WGridsLayout= []
+    Lignes= []
+    Grille= []
+    LigneLayout= []
+    Lignes1 = []
+    Grille1= []
+    Ligne1Layout= []
+    layout = QHBoxLayout()
+    layouts= []
+    Panel = []
+
+
+    def __init__(self):
+        QWidget.__init__(self)
+        self.setWindowTitle("Résolveur de Sudoku")
+        self.resize(800,800)
+
+        for i in range(9):
+            self.Lignes.append(QWidget())
+            self.Lignes1.append(QWidget())
+            self.LigneLayout.append(QHBoxLayout())
+            self.Ligne1Layout.append(QHBoxLayout())
+            self.Lignes[i].setLayout(self.LigneLayout[i])
+            self.Lignes1[i].setLayout(self.Ligne1Layout[i])
+        for i in range(2):
+            self.WGrids.append(QWidget())
+            self.WGridsLayout.append(QVBoxLayout())
+        for i in range(3):
+            self.Panel.append(QWidget())
+        self.layouts.append(QVBoxLayout())
+        for i in range(3):
+            self.layout.addWidget(self.Panel[i])
+        self.setLayout(self.layout)
+        self.Panel[1].setLayout(self.layouts[0])
+        self.layouts[0].addWidget(self.WGrids[0])
+        self.layouts[0].addWidget(self.WGrids[1])
+        self.WGrids[0].setLayout(self.WGridsLayout[0])
+        self.WGrids[1].setLayout(self.WGridsLayout[1])
+        for i in range(9):
+            for j in range(9):
+                self.Grille.append(QLabel("0"))
+                self.Grille1.append(Text())
+                self.LigneLayout[i].addWidget(self.Grille[i*9+j])
+                self.Ligne1Layout[i].addWidget(self.Grille1[i*9+j])
+        for i in range(9):
+            self.WGridsLayout[0].addWidget(self.Lignes[i])
+            self.WGridsLayout[1].addWidget(self.Lignes1[i])
+        for i in range(9):
+            self.LigneLayout[i].setContentsMargins(68,9,9,9)
 
 
 app = QApplication.instance()
@@ -50,43 +83,9 @@ def refresh(x,y):
         for j in range(9):
             x[i*9+j].setText(y[i*9+j].toPlainText())
 fen = Fenetre()
-fen.resize(800,800)
 
 
 
-for i in range(9):
-    Lignes.append(QWidget())
-    Lignes1.append(QWidget())
-    LigneLayout.append(QHBoxLayout())
-    Ligne1Layout.append(QHBoxLayout())
-    Lignes[i].setLayout(LigneLayout[i])
-    Lignes1[i].setLayout(Ligne1Layout[i])
-for i in range(2):
-    WGrids.append(QWidget())
-    WGridsLayout.append(QVBoxLayout())
-for i in range(3):
-    Panel.append(QWidget())
-layouts.append(QVBoxLayout())
-for i in range(3):
-    layout.addWidget(Panel[i])
-fen.setLayout(layout)
-Panel[1].setLayout(layouts[0])
-layouts[0].addWidget(WGrids[0])
-layouts[0].addWidget(WGrids[1])
-WGrids[0].setLayout(WGridsLayout[0])
-WGrids[1].setLayout(WGridsLayout[1])
-for i in range(9):
-    for j in range(9):
-        Grille.append(QLabel("0"))
-        Grille1.append(Text())
-        LigneLayout[i].addWidget(Grille[i*9+j])
-        Ligne1Layout[i].addWidget(Grille1[i*9+j])
-for i in range(9):
-    WGridsLayout[0].addWidget(Lignes[i])
-    WGridsLayout[1].addWidget(Lignes1[i])
-for i in range(9):
-    LigneLayout[i].setContentsMargins(68,9,9,9)
 fen.show()
 
 app.exec_()
- 
