@@ -17,25 +17,27 @@ class Fenetre(QWidget):
     def __init__(self):
         QWidget.__init__(self)
         self.setWindowTitle("Résolveur de Sudoku")
-class Text(QTextEdit):
-    def __init__(self):
-        QTextEdit.__init__(self)
-        self.setText("0")
-        self.setFocusPolicy(Qt.StrongFocus)
-    def keyPressEvent(self, event):
-        print("oops")
-        refresh(Grille,Grille1)
+        
 def Test(text):
-
         font = text.document().defaultFont()
         fontMetrics = QFontMetrics(font)
         textSize = fontMetrics.size(0, text.toPlainText())
-
+        
         w = textSize.width() + 10
         h = textSize.height() + 10
         text.setMinimumSize(w, h)
         text.setMaximumSize(w, h)
         text.resize(w, h)
+
+class Text(QTextEdit):
+    def __init__(self):
+        QTextEdit.__init__(self)
+        self.setText("0")
+        self.setFocusPolicy(Qt.StrongFocus)
+        Test(self)
+    def keyPressEvent(self, event):
+        QTextEdit.keyPressEvent(self,event)
+        refresh(Grille,Grille1)
 
 
 app = QApplication.instance()
@@ -77,12 +79,13 @@ for i in range(9):
     for j in range(9):
         Grille.append(QLabel("0"))
         Grille1.append(Text())
-        Test(Grille1[9*i+j])
         LigneLayout[i].addWidget(Grille[i*9+j])
         Ligne1Layout[i].addWidget(Grille1[i*9+j])
 for i in range(9):
     WGridsLayout[0].addWidget(Lignes[i])
     WGridsLayout[1].addWidget(Lignes1[i])
+for i in range(9):
+    LigneLayout[i].setContentsMargins(68,9,9,9)
 fen.show()
 
 app.exec_()
