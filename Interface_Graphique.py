@@ -2,12 +2,29 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
-
+WGrids= []
+WGridsLayout= []
+Lignes= []
+Grille= []
+LigneLayout= []
+Lignes1 = []
+Grille1= []
+Ligne1Layout= []
+layout = QHBoxLayout()
+layouts= []
+Panel = []
 class Fenetre(QWidget):
     def __init__(self):
         QWidget.__init__(self)
         self.setWindowTitle("Résolveur de Sudoku")
-
+class Text(QTextEdit):
+    def __init__(self):
+        QTextEdit.__init__(self)
+        self.setText("0")
+        self.setFocusPolicy(Qt.StrongFocus)
+    def keyPressEvent(self, event):
+        print("oops")
+        refresh(Grille,Grille1)
 def Test(text):
 
         font = text.document().defaultFont()
@@ -32,17 +49,7 @@ def refresh(x,y):
             x[i*9+j].setText(y[i*9+j].toPlainText())
 fen = Fenetre()
 fen.resize(800,800)
-WGrids= []
-WGridsLayout= []
-Lignes= []
-Grille= []
-LigneLayout= []
-Lignes1 = []
-Grille1= []
-Ligne1Layout= []
-layout = QHBoxLayout()
-layouts= []
-Panel = []
+
 
 
 for i in range(9):
@@ -69,9 +76,8 @@ WGrids[1].setLayout(WGridsLayout[1])
 for i in range(9):
     for j in range(9):
         Grille.append(QLabel("0"))
-        Grille1.append(QTextEdit())
-        Grille1[i*9+j].setText("0")
-        Test(Grille1[i*9+j])
+        Grille1.append(Text())
+        Test(Grille1[9*i+j])
         LigneLayout[i].addWidget(Grille[i*9+j])
         Ligne1Layout[i].addWidget(Grille1[i*9+j])
 for i in range(9):
