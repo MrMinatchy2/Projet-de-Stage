@@ -94,7 +94,6 @@ def refresh(x,y):
         for j in range(9):
             x[i*9+j].setText(y[i*9+j].toPlainText())
 fen = Fenetre()
-fen.toGrille(l)
 fen.show()
 
 app.exec_()
