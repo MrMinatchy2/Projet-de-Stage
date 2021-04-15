@@ -17,6 +17,16 @@ class Text(QTextEdit):
         self.setMinimumSize(w, h)
         self.setMaximumSize(w, h)
         self.resize(w, h)
+    def Test(self):
+        font = self.document().defaultFont()
+        fontMetrics = QFontMetrics(font)
+        textSize = fontMetrics.size(0, self.toPlainText())
+        
+        w = textSize.width() + 10
+        h = textSize.height() + 10
+        self.setMinimumSize(w, h)
+        self.setMaximumSize(w, h)
+        self.resize(w, h)
     def keyPressEvent(self, event):
         QTextEdit.keyPressEvent(self,event)
         refresh(fen.Grille,fen.Grille1)
@@ -71,6 +81,14 @@ class Fenetre(QWidget):
         for i in range(9):
             self.LigneLayout[i].setContentsMargins(68,9,9,9)
             
+    def toListeInt(self):
+        liste=[]
+        for i in range(9):
+            liste.append([])
+            for j in range(9):
+                liste[i].append(int(self.Grille[i*9+j].text()))
+        return liste
+    
     def toListe(self):
         liste=[]
         for i in range(9):
@@ -91,8 +109,33 @@ class Fenetre(QWidget):
 app = QApplication.instance()
 if not app:
     app = QApplication(sys.argv)
+def valide(sudoku):
+    valide= True
+    for i in range(9):
+        l=sudoku[i]
+        for j in range(9):
+            if l.count(str(j))>1:
+                valide=False
 
+    for i in range(9):
+        l=[]
+        for j in range(9):
+            l.append(sudoku[j][i])
+        for j in range(9):
+            if l.count(str(j))>1:
+                valide=False
 
+    for i in range(9):
+        l=[]
+        for j in range(9):
+            l.append(sudoku[int(j/3)+(int(i/3)*3)][(j%3)+((i%3)*3)])
+        for j in range(9):
+            if l.count(str(j))>1:
+                valide=False
+
+    return valide
+        
+        
 def refresh(x,y):
     for i in range(9):
         for j in range(9):
@@ -103,9 +146,19 @@ for i in range(9):
     l.append([])
     for j in range(9):
         l[i].append(str(random.randint(0,9)))
+l=[["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
+print(l)
+print(valide(l))
+while not valide(l):
+    l=[]
+    for i in range(9):
+        l.append([])
+        for j in range(9):
+            l[i].append(str(random.randint(0,9)))
 fen.toGrille(l)
 fen.reInput()
 print(fen.toListe())
+print(len([]))
 fen.show()
 
 app.exec_()
