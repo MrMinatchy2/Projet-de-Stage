@@ -28,10 +28,8 @@ def populatebyrow(prob):
     # names is ["x1", "x3"]
     names = prob.variables.get_names([0, 1])
     rows = [[["x1","x2"],[2.5, 7.5]],[["x1","x2"],[0.125,0.125]],[["x1","x2"],[ 17.5,10.0 ]]]
-    
-    print("marche")
+
     prob.linear_constraints.add(lin_expr = rows, senses = my_sense,rhs = my_rhs, names = my_rownames)
-    print("marche pas")
     # because there are two arguments, they are taken to specify a range
     # thus, cols is the entire constraint matrix as a list of column vectors
     cols = prob.variables.get_cols("x1", "x2")
