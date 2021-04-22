@@ -4,12 +4,12 @@ from cplex.exceptions import CplexError
 import sys
 
 # data common to all populateby functions
-my_obj      = [5.0, -2.0,3.0]
-my_ub       = [cplex.infinity,cplex.infinity, cplex.infinity]
-my_colnames = ["x1", "x2","x3"]
-my_rhs      = [2.0, 3.0,5.0,0.0,0.0,0.0]
-my_rownames = ["c1", "c2","c3","c4","c5","c6"]
-my_sense    = "GLLGGG"
+my_obj      = [2.0, 3.0]
+my_ub       = [cplex.infinity,cplex.infinity]
+my_colnames = ["x1", "x2"]
+my_rhs      = [40.0, 70.0,80.0,0.0,0.0, 20.0]
+my_rownames = ["c1", "c2","c3","c4","c5", "c6"]
+my_sense    = "LLLGGG"
 
 
 def populatebyrow(prob):
@@ -26,13 +26,13 @@ def populatebyrow(prob):
     # ub1 is just the first lower bound
     ub1 = prob.variables.get_upper_bounds(0)
     # names is ["x1", "x3"]
-    names = prob.variables.get_names([0, 2])
-    rows = [[["x1","x2","x3"],[2.0,2.0, -1.0]],[["x1","x2","x3"],[3.0,-4.0,0.0]],[["x1","x2","x3"],[ 0.0,1.0,3.0 ]],[["x1","x2","x3"],[ 1.0,0.0,0.0 ]],[["x1","x2","x3"],[ 0.0,0.0,1.0 ]],[["x1","x2","x3"],[ 0.0,1.0,0.0 ]]]
+    names = prob.variables.get_names([0, 1])
+    rows = [[["x1","x2"],[1.0,0.0]] , [["x1","x2"],[0.0,1.0]] , [["x1","x2"],[1.0,1.0]] , [["x1","x2"],[1.0,0.0]] , [["x1","x2"],[0.0,1.0]], [["x1","x2"],[1.0,1.0]]]
     
     prob.linear_constraints.add(lin_expr = rows, senses = my_sense,rhs = my_rhs, names = my_rownames)
     # because there are two arguments, they are taken to specify a range
     # thus, cols is the entire constraint matrix as a list of column vectors
-    cols = prob.variables.get_cols("x1", "x3")
+    cols = prob.variables.get_cols("x1", "x2")
 
 
 def lpex1(pop_method):

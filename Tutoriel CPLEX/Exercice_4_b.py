@@ -4,11 +4,11 @@ from cplex.exceptions import CplexError
 import sys
 
 # data common to all populateby functions
-my_obj      = [5.0, -2.0,3.0]
-my_ub       = [cplex.infinity,cplex.infinity, cplex.infinity]
+my_obj      = [0.0,1.0, 2.0]
+my_ub       = [cplex.infinity,cplex.infinity,cplex.infinity]
 my_colnames = ["x1", "x2","x3"]
-my_rhs      = [2.0, 3.0,5.0,0.0,0.0,0.0]
-my_rownames = ["c1", "c2","c3","c4","c5","c6"]
+my_rhs      = [36.0, 98.0,50.0,0.0,0.0, 0.0]
+my_rownames = ["c1", "c2","c3","c4","c5", "c6"]
 my_sense    = "GLLGGG"
 
 
@@ -27,7 +27,7 @@ def populatebyrow(prob):
     ub1 = prob.variables.get_upper_bounds(0)
     # names is ["x1", "x3"]
     names = prob.variables.get_names([0, 2])
-    rows = [[["x1","x2","x3"],[2.0,2.0, -1.0]],[["x1","x2","x3"],[3.0,-4.0,0.0]],[["x1","x2","x3"],[ 0.0,1.0,3.0 ]],[["x1","x2","x3"],[ 1.0,0.0,0.0 ]],[["x1","x2","x3"],[ 0.0,0.0,1.0 ]],[["x1","x2","x3"],[ 0.0,1.0,0.0 ]]]
+    rows = [[["x1","x2","x3"],[1.0,2.0,3.0]] , [["x1","x2","x3"],[2.0,1.0,4.0]] , [["x1","x2","x3"],[1.0,1.0,1.0]] , [["x1","x2","x3"],[1.0,0.0,0.0]] , [["x1","x2","x3"],[0.0,1.0,0.0]], [["x1","x2","x3"],[0.0,0.0,1.0]]]
     
     prob.linear_constraints.add(lin_expr = rows, senses = my_sense,rhs = my_rhs, names = my_rownames)
     # because there are two arguments, they are taken to specify a range
