@@ -4,12 +4,23 @@ from cplex.exceptions import CplexError
 import sys
 
 # data common to all populateby functions
-my_obj      = [2.0, 1.0]
-my_ub       = [cplex.infinity, cplex.infinity]
-my_colnames = ["x1", "x2"]
-my_rhs      = [9.0, 3.0,12.0,0.0,0.0]
-my_rownames = ["c1", "c2","c3","c4","c5"]
-my_sense    = "GLLGG"
+my_obj      = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+my_ub       = [cplex.infinity, cplex.infinity,cplex.infinity, cplex.infinity,cplex.infinity, cplex.infinity,cplex.infinity, cplex.infinity,cplex.infinity]
+my_colnames = []
+for i in range(1,10):
+    my_colnames.append("x"+str(i))
+my_rhs      = []
+for i in range(9):
+    my_rhs.append(0.0)
+my_rhs.extend([5.0,8.0,1.0,3.0,2.0,7.0,3.0,4.0])
+for i in range(5):
+    my_rhs.append(0.0)
+print(my_rhs)
+my_rownames = []
+for i in range(1,23):
+    my_rownames.append("c"+str(i))
+print(my_rownames)
+my_sense    = "GGGGGGGGGLLLLLLLLEEEEE"
 
 
 def populatebyrow(prob):
@@ -26,13 +37,34 @@ def populatebyrow(prob):
     # ub1 is just the first lower bound
     ub1 = prob.variables.get_upper_bounds(0)
     # names is ["x1", "x3"]
-    names = prob.variables.get_names([0, 1])
-    rows = [[["x1","x2"],[3.0, 2.0]],[["x1","x2"],[0.0,1.0]],[["x1","x2"],[ 3.0,-1.0 ]],[["x1","x2"],[ 1.0,0.0 ]],[["x1","x2"],[ 0.0,1.0 ]]]
+    names = prob.variables.get_names([0, 8])
+    rows = [[["x1"],[1.0]],
+            [["x2"],[1.0]],
+            [["x3"],[1.0]],
+            [["x4"],[1.0]],
+            [["x5"],[1.0]],
+            [["x6"],[1.0]],
+            [["x7"],[1.0]],
+            [["x8"],[1.0]],
+            [["x9"],[1.0]],
+            [["x1"],[1.0]],
+            [["x2"],[1.0]],
+            [["x3"],[1.0]],
+            [["x4"],[1.0]],
+            [["x5"],[1.0]],
+            [["x6"],[1.0]],
+            [["x7"],[1.0]],
+            [["x8"],[1.0]],
+            [["x9","x1","x2"],[-1.0,1.0,1.0]],
+            [["x1","x3","x4","x5"],[-1.0,1.0,1.0,1.0]],
+            [["x6","x4","x7"],[-1.0,1.0,1.0]],
+            [["x2","x7","x8"],[-1.0,1.0,1.0]],
+            [["x9","x3","x6","x8"],[-1.0,1.0,1.0,1.0]]]
     
     prob.linear_constraints.add(lin_expr = rows, senses = my_sense,rhs = my_rhs, names = my_rownames)
     # because there are two arguments, they are taken to specify a range
     # thus, cols is the entire constraint matrix as a list of column vectors
-    cols = prob.variables.get_cols("x1", "x2")
+    cols = prob.variables.get_cols("x1", "x9")
 
 
 def lpex1(pop_method):

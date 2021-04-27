@@ -4,7 +4,7 @@ from cplex.exceptions import CplexError
 import sys
 
 # data common to all populateby functions
-my_obj      = [0.0,1.0, 2.0]
+my_obj      = [5.0,1.0, 2.0]
 my_ub       = [cplex.infinity,cplex.infinity,cplex.infinity]
 my_colnames = ["x1", "x2","x3"]
 my_rhs      = [36.0, 98.0,50.0,0.0,0.0, 0.0]
