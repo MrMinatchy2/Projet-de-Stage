@@ -1,4 +1,4 @@
-
+import docplex
 import cplex
 from cplex.exceptions import CplexError
 import sys
