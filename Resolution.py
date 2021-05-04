@@ -2,6 +2,14 @@ import docplex
 from docplex.mp.model import Model
 import sys
 
+def carre(M,carre,c):
+    for i in range(3):
+        for j in range(3):
+            for k in range(3):
+                for l in range(3):
+                    if((k*3+l)!=(i*3+j)):
+                        M.add_constraint(carre[i*3+j] != carre[k*3+l], "c"+str(c))
+                        c+=1
 def lpex1():
     c=1
     M=Model("Sudoku")
@@ -28,8 +36,19 @@ def lpex1():
                     M.add_constraint(var[i*9+j] != var[j+((k*9))%81], "c"+str(c))
                     c+=1
 
-    M2=[]
-    
+    var2=[]
+    for i in range(3):
+        for j in range(3):
+            var2=[]
+            for k in range(3):
+                for l in range(3):
+                    if(j==1):
+                        var2.append(var[i*9*3+k*9+j*3+l])
+                    if j==1:
+                        print(i*9*3+k*9+j*3+l)
+            if(j==1):
+                carre(M,var2,c)
+                var2.clear()
     M.maximize(sum(var))
     M.solve()
     for i in range(81):
