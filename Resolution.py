@@ -26,8 +26,9 @@ def lpex1():
             for k in range(9):
                 if((i*9+j)!=(j+((k*9))%81)):
                     M.add_constraint(var[i*9+j] != var[j+((k*9))%81], "c"+str(c))
-                    print(i*9+j," ",j+((k*9))%81)
                     c+=1
+
+    M2=[]
     
     M.maximize(sum(var))
     M.solve()
