@@ -42,11 +42,8 @@ def lpex1():
             var2=[]
             for k in range(3):
                 for l in range(3):
-                    if(j==1):
-                        var2.append(var[i*9*3+k*9+j*3+l])
-                    if j==1:
-                        print(i*9*3+k*9+j*3+l)
-            if(j==1):
+                    var2.append(var[i*9*3+k*9+j*3+l])
+            if(j==2 or j==1):
                 carre(M,var2,c)
                 var2.clear()
     M.maximize(sum(var))

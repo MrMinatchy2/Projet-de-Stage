@@ -113,28 +113,94 @@ def valide(sudoku):
     valide= True
     for i in range(9):
         l=sudoku[i]
-        for j in range(9):
-            if l.count(str(j))>1:
+        for j in range(10):
+            if l.count(str(j))>1 and j!=0:
                 valide=False
 
     for i in range(9):
         l=[]
         for j in range(9):
             l.append(sudoku[j][i])
-        for j in range(9):
-            if l.count(str(j))>1:
+        for j in range(10):
+            if l.count(str(j))>1 and j!=0:
                 valide=False
 
     for i in range(9):
         l=[]
         for j in range(9):
             l.append(sudoku[int(j/3)+(int(i/3)*3)][(j%3)+((i%3)*3)])
-        for j in range(9):
-            if l.count(str(j))>1:
+        for j in range(10):
+            if l.count(str(j))>1 and j!=0:
                 valide=False
 
     return valide
-        
+
+def valideint(sudoku):
+    valide= True
+    for i in range(9):
+        l=sudoku[i]
+        for j in range(10):
+            if l.count(j)>1 and j!=0:
+                valide=False
+
+    for i in range(9):
+        l=[]
+        for j in range(9):
+            l.append(sudoku[j][i])
+        for j in range(10):
+            if l.count(j)>1 and j!=0:
+                valide=False
+
+    for i in range(9):
+        l=[]
+        for j in range(9):
+            l.append(sudoku[int(j/3)+(int(i/3)*3)][(j%3)+((i%3)*3)])
+        for j in range(10):
+            if l.count(j)>1 and j!=0:
+                valide=False
+
+    return valide
+
+
+def Remplie(liste):
+    plein = True
+    for i in range(9):
+        for j in range(9):
+            if (liste[i][j]==0):
+                plein=False
+    return plein
+
+def Copie(liste,y,x,val):
+    l=liste.copy()
+    l[y][x]=val
+    return l
+
+def ResoudreArbre(liste,num):
+    c=num
+    i=0
+    j=0
+    x=0
+    y=0
+    while x<9:
+        y=0
+        while y<9:
+            if(liste[x][y]==0):
+                i=x
+                j=y
+                x=9
+                y=9
+            y+=1
+        x+=1
+    print(i,j)
+    while not Remplie(liste):
+        while not valideint(Copie(liste,i,j,c)):
+            c+=1
+        if valide(Copie(liste,i,j,c)):
+            if valideint(ResoudreArbre(Copie(liste,i,j,c),1)):
+                return ResoudreArbre(Copie(liste,i,j,c),1)
+
+    print("plz no")
+    return liste
         
 def refresh(x,y):
     for i in range(9):
@@ -149,6 +215,10 @@ for i in range(9):
 l=[["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
 print(l)
 print(valide(l))
+sys.setrecursionlimit(15000)
+l2=[[5,3,4,0,7,0,9,1,2],[6,7,2,1,0,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,0,7,6,0,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
+print(ResoudreArbre(l2,1))
+print(valide(ResoudreArbre(l2,1)))
 while not valide(l):
     l=[]
     for i in range(9):
