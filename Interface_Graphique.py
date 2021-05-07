@@ -138,6 +138,11 @@ def valide(sudoku):
 def valideint(sudoku):
     valide= True
     for i in range(9):
+        for j in range(9):
+            if sudoku[i][j]<0 or sudoku[i][j]>9:
+                valide=False
+                
+    for i in range(9):
         l=sudoku[i]
         for j in range(10):
             if l.count(j)>1 and j!=0:
@@ -191,15 +196,16 @@ def ResoudreArbre(liste,num):
                 y=9
             y+=1
         x+=1
-    print(i,j)
     while not Remplie(liste):
-        while not valideint(Copie(liste,i,j,c)):
+        while c<9 and not valideint(Copie(liste,i,j,c)):
             c+=1
-        if valide(Copie(liste,i,j,c)):
-            if valideint(ResoudreArbre(Copie(liste,i,j,c),1)):
-                return ResoudreArbre(Copie(liste,i,j,c),1)
-
-    print("plz no")
+        if valideint(Copie(liste,i,j,c)):
+            liste= ResoudreArbre(Copie(liste,i,j,c),1)
+            c+=1
+        if c>=9 and not (Remplie(liste) and valideint(liste)):
+            liste[i][j]=0
+            return liste
+    
     return liste
         
 def refresh(x,y):
@@ -216,9 +222,11 @@ l=[["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],[
 print(l)
 print(valide(l))
 sys.setrecursionlimit(15000)
+l1=[[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
 l2=[[5,3,4,0,7,0,9,1,2],[6,7,2,1,0,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,0,7,6,0,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
-print(ResoudreArbre(l2,1))
-print(valide(ResoudreArbre(l2,1)))
+l3=[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]]
+print(ResoudreArbre(l3,1))
+print(valideint(ResoudreArbre(l3,1)))
 while not valide(l):
     l=[]
     for i in range(9):
