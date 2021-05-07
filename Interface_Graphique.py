@@ -28,8 +28,12 @@ class Text(QTextEdit):
         self.setMaximumSize(w, h)
         self.resize(w, h)
     def keyPressEvent(self, event):
-        QTextEdit.keyPressEvent(self,event)
+        if event.key() != Qt.Key_Enter:
+            QTextEdit.keyPressEvent(self,event)
         refresh(fen.Grille,fen.Grille1)
+        if event.key() == Qt.Key_Enter: 
+            fen.toGrille(myMap(ResoudreArbre(fen.toListeIntAff())))
+        
 
 class Fenetre(QWidget):
     WGrids= []
@@ -87,6 +91,14 @@ class Fenetre(QWidget):
             liste.append([])
             for j in range(9):
                 liste[i].append(int(self.Grille[i*9+j].text()))
+        return liste
+    
+    def toListeIntAff(self):
+        liste=[]
+        for i in range(9):
+            liste.append([])
+            for j in range(9):
+                liste[i].append(int(self.Grille1[i*9+j].toPlainText()))
         return liste
     
     def toListe(self):
@@ -166,7 +178,13 @@ def valideint(sudoku):
 
     return valide
 
-
+def myMap(l):
+    l1=l.copy()
+    for i in range(9):
+        for j in range(9):
+            l1[i][j]=str(l1[i][j])
+    return l1
+    
 def Remplie(liste):
     plein = True
     for i in range(9):
@@ -180,8 +198,8 @@ def Copie(liste,y,x,val):
     l[y][x]=val
     return l
 
-def ResoudreArbre(liste,num):
-    c=num
+def ResoudreArbre(liste):
+    c=1
     i=0
     j=0
     x=0
@@ -200,7 +218,7 @@ def ResoudreArbre(liste,num):
         while c<9 and not valideint(Copie(liste,i,j,c)):
             c+=1
         if valideint(Copie(liste,i,j,c)):
-            liste= ResoudreArbre(Copie(liste,i,j,c),1)
+            liste= ResoudreArbre(Copie(liste,i,j,c))
             c+=1
         if c>=9 and not (Remplie(liste) and valideint(liste)):
             liste[i][j]=0
@@ -224,11 +242,10 @@ print(valide(l))
 l1=[[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
 l2=[[5,3,4,0,7,0,9,1,2],[6,7,2,1,0,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,0,7,6,0,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
 l3=[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]]
-print(ResoudreArbre(l3,1))
-print(valideint(ResoudreArbre(l3,1)))
 
-fen.toGrille(l)
+fen.toGrille(myMap(l3))
 fen.reInput()
+
 print(fen.toListeInt())
 print(len([]))
 fen.show()
