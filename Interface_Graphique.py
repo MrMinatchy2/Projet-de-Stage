@@ -215,6 +215,7 @@ def ResoudreArbre(liste):
             y+=1
         x+=1
     while not Remplie(liste):
+        print(liste)
         while c<9 and not valideint(Copie(liste,i,j,c)):
             c+=1
         if valideint(Copie(liste,i,j,c)):
@@ -223,7 +224,6 @@ def ResoudreArbre(liste):
         if c>=9 and not (Remplie(liste) and valideint(liste)):
             liste[i][j]=0
             return liste
-    
     return liste
         
 def refresh(x,y):
