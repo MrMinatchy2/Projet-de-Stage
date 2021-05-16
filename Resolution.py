@@ -1,55 +1,42 @@
 import docplex
-from docplex.mp.model import Model
+from docplex.cp.model import CpoModel
 import sys
 
-def carre(M,carre,c):
-    for i in range(3):
-        for j in range(3):
-            for k in range(3):
-                for l in range(3):
-                    if((k*3+l)!=(i*3+j)):
-                        M.add_constraint(carre[i*3+j] != carre[k*3+l], "c"+str(c))
-                        c+=1
-def lpex1():
-    c=1
-    M=Model("Sudoku")
-    var=[]
-    for i in range(81):
-        var.append(M.integer_var(name="x"+str(i)))
-        M.add_constraint(var[i] >= 1, "c"+str(c))
-        c+=1
-    for i in range(9):
-        M.add_constraint(sum(var[i*9:i*9+9]) == 45, "c"+str(c))
-        c+=1
-    
-    for i in range(9):
-        for j in range(9):
-            for k in range(9):
-                if((i*9+j)!=(i*9+k)):
-                    M.add_constraint(var[i*9+j] != var[i*9+k], "c"+str(c))
-                    c+=1
-    
-    for i in range(9):
-        for j in range(9):
-            for k in range(9):
-                if((i*9+j)!=(j+((k*9))%81)):
-                    M.add_constraint(var[i*9+j] != var[j+((k*9))%81], "c"+str(c))
-                    c+=1
+def set 
+def lpex1(liste):
+    myInput =[[0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-    var2=[]
-    for i in range(3):
-        for j in range(3):
-            var2=[]
-            for k in range(3):
-                for l in range(3):
-                    var2.append(var[i*9*3+k*9+j*3+l])
-            if(j==2 or j==1):
-                carre(M,var2,c)
-                var2.clear()
-    M.maximize(sum(var))
-    M.solve()
-    for i in range(81):
-        print(var[i].solution_value,end=" ")
-        if (i+1)%9==0:
-            print(" ")
+    c=1
+    M=CpoModel("Sudoku")
+    GRNG = range(9)
+
+    var = [[M.integer_var(min=1, max=9, name="x" + str(l*9+c)) for l in range(9)] for c in range(9)]
+    
+    # Add alldiff constraints for lines
+    for l in GRNG:
+        M.add(M.all_diff([var[l][c] for c in GRNG]))
+
+    # Add alldiff constraints for columns
+    for c in GRNG:
+        M.add(M.all_diff([var[l][c] for l in GRNG]))
+
+    # Add alldiff constraints for sub-squares
+    ssrng = range(0, 9, 3)
+    for sl in ssrng:
+        for sc in ssrng:
+            M.add(M.all_diff([var[l][c] for l in range(sl, sl + 3) for c in range(sc, sc + 3)]))
+            
+    msol=M.solve(TimeLimit=10)
+    sol=[[msol[var[l][c]] for c in GRNG] for l in GRNG]
+    for i in range(9):
+        print(sol[i])
+    
 lpex1()
