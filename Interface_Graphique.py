@@ -214,12 +214,52 @@ def ResoudreArbre(liste,taille):
             liste[i][j]=0
             return liste
     return liste
+
+def countIndices(liste,taille,nombre,x,y):
+    compt=0
+    compt+=sum(z!=0 for z in i)
+    for j in range(taille):
+        if liste[j][x]!=0:
+            compt+=1
+    return compt
         
+def calculProba(liste,taille,probs):
+    
+    
+def ResoudreProba(liste,taille):
+    probs=9*[(100/9)]
+    c=1
+    i=0
+    j=0
+    x=0
+    y=0
+    while x<taille:
+        y=0
+        while y<taille:
+            if(liste[x][y]==0):
+                i=x
+                j=y
+                x=taille
+                y=taille
+            y+=1
+        x+=1
+    while not Remplie(liste,taille):
+        while c<taille and not valideint(Copie(liste,i,j,c),taille):
+            c+=1
+        if valideint(Copie(liste,i,j,c),taille):
+            liste= ResoudreArbre(Copie(liste,i,j,c),taille)
+            c+=1
+        if c>=taille and not (Remplie(liste,taille) and valideint(liste,taille)):
+            liste[i][j]=0
+            return liste
+    return liste
+
+
 def refresh(x,y,taille):
     for i in range(taille):
         for j in range(taille):
             x[i*taille+j].setText(y[i*taille+j].toPlainText())
-fen = Fenetre(8)
+fen = Fenetre(16)
 
 l=[["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
 
