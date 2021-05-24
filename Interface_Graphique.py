@@ -165,7 +165,7 @@ def valideint(sudoku,taille):
         for j in range(taille+1):
             if l.count(j)>1 and j!=0:
                 valide=False
-
+                
     return valide
 
 def myMap(l,taille):
@@ -221,6 +221,24 @@ def countIndices(liste,taille,nombre,x,y):
     for j in range(taille):
         if liste[j][x]!=0:
             compt+=1
+    divx=0
+    divy=0
+    for i in range(2,taille):
+        if(taille%i==0 and i*i==taille):
+            divx=i
+    divy=divx
+    if divx==0 and divy==0:
+        for i in range(2,taille):
+            if(taille%i==0 and divx==0):
+                divx=i
+        for i in range(2,taille):
+            if(taille%i==0 and (divx*i)==taille and divy==0):
+                divy=i
+                
+    ssrng=range(0, taille, divy)
+    for j in range(taille):
+        
+    
     return compt
         
 def calculProba(liste,taille,probs):
