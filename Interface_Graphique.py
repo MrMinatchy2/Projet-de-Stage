@@ -234,7 +234,7 @@ def countIndices(liste,taille,nombre,x,y):
         for i in range(2,taille):
             if(taille%i==0 and (divx*i)==taille and divy==0):
                 divy=i
-                
+    
     ssrng=range(0, taille, divy)
     for j in range(taille):
         
