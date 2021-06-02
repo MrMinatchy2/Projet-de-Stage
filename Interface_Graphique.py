@@ -5,6 +5,7 @@ import random
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
+Res=2
 class Text(QTextEdit):
     def __init__(self):
         QTextEdit.__init__(self)
@@ -34,7 +35,10 @@ class Text(QTextEdit):
             QTextEdit.keyPressEvent(self,event)
         refresh(fen.Grille,fen.Grille1,fen.taille)
         if event.key() == Qt.Key_Enter:
-            fen.toGrille(myMap(lpexl(fen.toListeIntAff(),fen.taille),fen.taille))
+            if Res==1:
+                fen.toGrille(myMap(lpexl(fen.toListeIntAff(),fen.taille),fen.taille))
+            if Res==2:
+                fen.toGrille(myMap(ResoudreArbre(fen.toListeIntAff(),fen.taille),fen.taille))
         
 
 class Fenetre(QWidget):
