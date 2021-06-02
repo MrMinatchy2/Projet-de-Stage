@@ -1,4 +1,6 @@
 import sys
+import docplex
+from docplex.cp.model import CpoModel
 import random
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
@@ -215,12 +217,34 @@ def ResoudreArbre(liste,taille):
             return liste
     return liste
 
-def countIndices(liste,taille,nombre,x,y):
-    compt=0
-    compt+=sum(z!=0 for z in i)
-    for j in range(taille):
-        if liste[j][x]!=0:
-            compt+=1
+
+def refresh(x,y,taille):
+    for i in range(taille):
+        for j in range(taille):
+            x[i*taille+j].setText(y[i*taille+j].toPlainText())
+
+
+def chargez(var,liste):
+    for i in range(9):
+        for j in range(9):
+            if(liste[i][j]>0):
+                var[i][j].set_domain((liste[i][j], liste[i][j]))
+def lpex1(liste,taille):
+
+    c=1
+    M=CpoModel("Sudoku")
+    GRNG = range(taille)
+
+    var = [[M.integer_var(min=1, max=taille, name="x" + str(l*taille+c)) for l in range(taille)] for c in range(taille)]
+
+    # Add alldiff constraints for lines
+    for l in GRNG:
+        M.add(M.all_diff([var[l][c] for c in GRNG]))
+
+    # Add alldiff constraints for columns
+    for c in GRNG:
+        M.add(M.all_diff([var[l][c] for l in GRNG]))
+
     divx=0
     divy=0
     for i in range(2,taille):
@@ -235,49 +259,19 @@ def countIndices(liste,taille,nombre,x,y):
             if(taille%i==0 and (divx*i)==taille and divy==0):
                 divy=i
     
-    ssrng=range(0, taille, divy)
-    for j in range(taille):
-        
     
-    return compt
-        
-def calculProba(liste,taille,probs):
-    
-    
-def ResoudreProba(liste,taille):
-    probs=9*[(100/9)]
-    c=1
-    i=0
-    j=0
-    x=0
-    y=0
-    while x<taille:
-        y=0
-        while y<taille:
-            if(liste[x][y]==0):
-                i=x
-                j=y
-                x=taille
-                y=taille
-            y+=1
-        x+=1
-    while not Remplie(liste,taille):
-        while c<taille and not valideint(Copie(liste,i,j,c),taille):
-            c+=1
-        if valideint(Copie(liste,i,j,c),taille):
-            liste= ResoudreArbre(Copie(liste,i,j,c),taille)
-            c+=1
-        if c>=taille and not (Remplie(liste,taille) and valideint(liste,taille)):
-            liste[i][j]=0
-            return liste
-    return liste
-
-
-def refresh(x,y,taille):
+    # Add alldiff constraints for sub-squares
+    ssrng = range(0, taille, divy)
+    for sl in ssrng:
+        for sc in range(0, taille, divx):
+            M.add(M.all_diff([var[l][c] for l in range(sl, sl + divy) for c in range(sc, sc + divx)]))
+    chargez(var,liste)
+    msol=M.solve(TimeLimit=10)
+    sol=[[msol[var[l][c]] for c in GRNG] for l in GRNG]
     for i in range(taille):
-        for j in range(taille):
-            x[i*taille+j].setText(y[i*taille+j].toPlainText())
-fen = Fenetre(16)
+        print(sol[i])
+        
+fen = Fenetre(9)
 
 l=[["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
 
