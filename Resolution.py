@@ -46,8 +46,7 @@ def lpex1(liste,taille):
     chargez(var,liste)
     msol=M.solve(TimeLimit=10)
     sol=[[msol[var[l][c]] for c in GRNG] for l in GRNG]
-    for i in range(taille):
-        print(sol[i])
+    print(sol)
 sudoku =[[0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
