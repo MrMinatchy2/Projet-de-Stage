@@ -5,7 +5,8 @@ import random
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
-Res=1
+Res=2
+#La classe de nos zones de saisi de texte
 class Text(QTextEdit):
     def __init__(self):
         QTextEdit.__init__(self)
@@ -40,7 +41,7 @@ class Text(QTextEdit):
             if Res==2:
                 fen.toGrille(myMap(ResoudreArbre(fen.toListeIntAff(),fen.taille),fen.taille))
         
-
+#La classe de notre interface Graphique
 class Fenetre(QWidget):
     WGrids= []
     WGridsLayout= []
@@ -100,6 +101,7 @@ class Fenetre(QWidget):
             for j in range(self.taille):
                 liste[i].append(int(self.Grille[i*self.taille+j].text()))
         return liste
+
     
     def toListeIntAff(self):
         liste=[]
@@ -108,6 +110,7 @@ class Fenetre(QWidget):
             for j in range(self.taille):
                 liste[i].append(int(self.Grille1[i*self.taille+j].toPlainText()))
         return liste
+
     
     def toListe(self):
         liste=[]
@@ -116,12 +119,13 @@ class Fenetre(QWidget):
             for j in range(self.taille):
                 liste[i].append(self.Grille[i*self.taille+j].text())
         return liste
+
     
     def toGrille(self,liste):
         for i in range(self.taille):
             for j in range(self.taille):
                 self.Grille[self.taille*i+j].setText(liste[i][j])
-
+    
     def reInput(self):
         for i in range(self.taille):
             for j in range(self.taille):
@@ -129,7 +133,8 @@ class Fenetre(QWidget):
 app = QApplication.instance()
 if not app:
     app = QApplication(sys.argv)
-
+    
+#Fonction indiquant si un Sudoku est valide
 def valideint(sudoku,taille):
     valide= True
     for i in range(taille):
@@ -174,13 +179,15 @@ def valideint(sudoku,taille):
                 
     return valide
 
+#Fonction permettant d'avoir une liste représentant un sudoku d'entier sous la forme de liste de caractère
 def myMap(l,taille):
     l1=l.copy()
     for i in range(taille):
         for j in range(taille):
             l1[i][j]=str(l1[i][j])
     return l1
-    
+
+#Fonction indiquand si un sudoku contient des cases vides    
 def Remplie(liste,taille):
     plein = True
     for i in range(taille):
@@ -189,11 +196,13 @@ def Remplie(liste,taille):
                 plein=False
     return plein
 
+#Fonction permettant la copie de notre sudoku
 def Copie(liste,y,x,val):
     l=liste.copy()
     l[y][x]=val
     return l
 
+#Fonction de résolution utilisant le backtracking
 def ResoudreArbre(liste,taille):
     c=1
     i=0
@@ -221,18 +230,20 @@ def ResoudreArbre(liste,taille):
             return liste
     return liste
 
-
+#Fonction pour actualiser notre affichage
 def refresh(x,y,taille):
     for i in range(taille):
         for j in range(taille):
             x[i*taille+j].setText(y[i*taille+j].toPlainText())
 
-
-def chargez(var,liste):
-    for i in range(9):
-        for j in range(9):
+#Fonction permettant de charger les case déjà rempli de notre sudoku parmi nos contraintes
+def chargez(var,liste,taille):
+    for i in range(taille):
+        for j in range(taille):
             if(liste[i][j]>0):
                 var[i][j].set_domain((liste[i][j], liste[i][j]))
+
+#Fonction de résolution utilisant Cplex
 def lpexl(liste,taille):
 
     c=1
@@ -264,27 +275,17 @@ def lpexl(liste,taille):
                 divy=i
     
     
-    # Ajout des contraintes sur les sous carrees
+    # Ajout des contraintes sur les sous grilles
     ssrng = range(0, taille, divy)
     for sl in ssrng:
         for sc in range(0, taille, divx):
             M.add(M.all_diff([var[l][c] for l in range(sl, sl + divy) for c in range(sc, sc + divx)]))
-    chargez(var,liste)
+    chargez(var,liste,taille)
     msol=M.solve(TimeLimit=10)
     sol=[[msol[var[l][c]] for c in GRNG] for l in GRNG]
     return sol
         
-fen = Fenetre(10)
-
-l=[["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
-
-l1=[[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
-l2=[[5,3,4,0,7,0,9,1,2],[6,7,2,1,0,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,0,7,6,0,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]]
-l3=[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]]
-
-
-fen.reInput()
-
+fen = Fenetre(16)
 
 fen.show()
 
