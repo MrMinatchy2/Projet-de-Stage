@@ -5,7 +5,9 @@ import random
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
+#Varible indiquand la méthode de resolution choisie
 Res=2
+
 #La classe de nos zones de saisi de texte
 class Text(QTextEdit):
     def __init__(self):
@@ -243,7 +245,7 @@ def chargez(var,liste,taille):
             if(liste[i][j]>0):
                 var[i][j].set_domain((liste[i][j], liste[i][j]))
 
-#Fonction de résolution utilisant Cplex
+#Fonction de resolution utilisant Cplex
 def lpexl(liste,taille):
 
     c=1
