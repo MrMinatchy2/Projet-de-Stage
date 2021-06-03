@@ -5,7 +5,7 @@ import random
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
-Res=1
+Res=2
 class Text(QTextEdit):
     def __init__(self):
         QTextEdit.__init__(self)
@@ -164,13 +164,14 @@ def valideint(sudoku,taille):
         for i in range(2,taille):
             if(taille%i==0 and (divx*i)==taille and divy==0):
                 divy=i
-    for i in range(taille):
-        l=[]
-        for j in range(taille):
-            l.append(sudoku[int(j/divx)+(int(i/divy)*divy)][(j%divx)+((i%divy)*divx)])
-        for j in range(taille+1):
-            if l.count(j)>1 and j!=0:
-                valide=False
+    if(divx!=0 or divy!=0):
+        for i in range(taille):
+            l=[]
+            for j in range(taille):
+                l.append(sudoku[int(j/divx)+(int(i/divy)*divy)][(j%divx)+((i%divy)*divx)])
+            for j in range(taille+1):
+                if l.count(j)>1 and j!=0:
+                    valide=False
                 
     return valide
 
@@ -180,7 +181,8 @@ def myMap(l,taille):
         for j in range(taille):
             l1[i][j]=str(l1[i][j])
     return l1
-    
+
+#Foncion verifiant que notre sudoku est plein    
 def Remplie(liste,taille):
     plein = True
     for i in range(taille):
@@ -189,6 +191,7 @@ def Remplie(liste,taille):
                 plein=False
     return plein
 
+#Foncion permettant la copie de notre sudoku
 def Copie(liste,y,x,val):
     l=liste.copy()
     l[y][x]=val
@@ -262,20 +265,18 @@ def lpexl(liste,taille):
         for i in range(2,taille):
             if(taille%i==0 and (divx*i)==taille and divy==0):
                 divy=i
-    
-    print(divx , divy)
-    # Ajout des contraintes sur les sous grilles
-    ssrng = range(0, taille, divy)
-    for sl in ssrng:
-        for sc in range(0, taille, divx):
-            M.add(M.all_diff([var[l][c] for l in range(sl, sl + divy) for c in range(sc, sc + divx)]))
+    if(divx!=0 or divy!=0):
+        # Ajout des contraintes sur les sous grilles
+        ssrng = range(0, taille, divy)
+        for sl in ssrng:
+            for sc in range(0, taille, divx):
+                M.add(M.all_diff([var[l][c] for l in range(sl, sl + divy) for c in range(sc, sc + divx)]))
     chargez(var,liste,taille)
-    print("la voila")
     msol=M.solve(TimeLimit=10)
     sol=[[msol[var[l][c]] for c in GRNG] for l in GRNG]
     return sol
         
-fen = Fenetre(8)
+fen = Fenetre(9)
 
 l=[["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
 
