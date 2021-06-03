@@ -5,9 +5,7 @@ import random
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QTextEdit
-#Varible indiquand la méthode de resolution choisie
 Res=2
-
 #La classe de nos zones de saisi de texte
 class Text(QTextEdit):
     def __init__(self):
@@ -17,7 +15,7 @@ class Text(QTextEdit):
         font = self.document().defaultFont()
         fontMetrics = QFontMetrics(font)
         textSize = fontMetrics.size(0, self.toPlainText())
-        
+
         w = textSize.width() + 10
         h = textSize.height() + 10
         self.setMinimumSize(w, h)
@@ -27,7 +25,7 @@ class Text(QTextEdit):
         font = self.document().defaultFont()
         fontMetrics = QFontMetrics(font)
         textSize = fontMetrics.size(0, self.toPlainText())
-        
+
         w = textSize.width() + 10
         h = textSize.height() + 10
         self.setMinimumSize(w, h)
@@ -42,7 +40,7 @@ class Text(QTextEdit):
                 fen.toGrille(myMap(lpexl(fen.toListeIntAff(),fen.taille),fen.taille))
             if Res==2:
                 fen.toGrille(myMap(ResoudreArbre(fen.toListeIntAff(),fen.taille),fen.taille))
-        
+
 #La classe de notre interface Graphique
 class Fenetre(QWidget):
     WGrids= []
@@ -95,7 +93,7 @@ class Fenetre(QWidget):
             self.WGridsLayout[1].addWidget(self.Lignes1[i])
         for i in range(taille):
             self.LigneLayout[i].setContentsMargins(68,9,9,9)
-            
+
     def toListeInt(self):
         liste=[]
         for i in range(self.taille):
@@ -104,7 +102,7 @@ class Fenetre(QWidget):
                 liste[i].append(int(self.Grille[i*self.taille+j].text()))
         return liste
 
-    
+
     def toListeIntAff(self):
         liste=[]
         for i in range(self.taille):
@@ -113,7 +111,7 @@ class Fenetre(QWidget):
                 liste[i].append(int(self.Grille1[i*self.taille+j].toPlainText()))
         return liste
 
-    
+
     def toListe(self):
         liste=[]
         for i in range(self.taille):
@@ -122,12 +120,12 @@ class Fenetre(QWidget):
                 liste[i].append(self.Grille[i*self.taille+j].text())
         return liste
 
-    
+
     def toGrille(self,liste):
         for i in range(self.taille):
             for j in range(self.taille):
                 self.Grille[self.taille*i+j].setText(liste[i][j])
-    
+
     def reInput(self):
         for i in range(self.taille):
             for j in range(self.taille):
@@ -135,7 +133,7 @@ class Fenetre(QWidget):
 app = QApplication.instance()
 if not app:
     app = QApplication(sys.argv)
-    
+
 #Fonction indiquant si un Sudoku est valide
 def valideint(sudoku,taille):
     valide= True
@@ -143,7 +141,7 @@ def valideint(sudoku,taille):
         for j in range(taille):
             if sudoku[i][j]<0 or sudoku[i][j]>taille:
                 valide=False
-                
+
     for i in range(taille):
         l=sudoku[i]
         for j in range(taille+1):
@@ -171,14 +169,15 @@ def valideint(sudoku,taille):
         for i in range(2,taille):
             if(taille%i==0 and (divx*i)==taille and divy==0):
                 divy=i
-    for i in range(taille):
-        l=[]
-        for j in range(taille):
-            l.append(sudoku[int(j/divx)+(int(i/divy)*divy)][(j%divx)+((i%divy)*divx)])
-        for j in range(taille+1):
-            if l.count(j)>1 and j!=0:
-                valide=False
-                
+    if(divx!=0 or divy!=0):
+        for i in range(taille):
+            l=[]
+            for j in range(taille):
+                l.append(sudoku[int(j/divx)+(int(i/divy)*divy)][(j%divx)+((i%divy)*divx)])
+            for j in range(taille+1):
+                if l.count(j)>1 and j!=0:
+                    valide=False
+
     return valide
 
 #Fonction permettant d'avoir une liste représentant un sudoku d'entier sous la forme de liste de caractère
@@ -189,7 +188,7 @@ def myMap(l,taille):
             l1[i][j]=str(l1[i][j])
     return l1
 
-#Fonction indiquand si un sudoku contient des cases vides    
+#Fonction indiquand si un sudoku contient des cases vides
 def Remplie(liste,taille):
     plein = True
     for i in range(taille):
@@ -245,15 +244,13 @@ def chargez(var,liste,taille):
             if(liste[i][j]>0):
                 var[i][j].set_domain((liste[i][j], liste[i][j]))
 
-#Fonction de resolution utilisant Cplex
+#Fonction de résolution utilisant Cplex
 def lpexl(liste,taille):
 
-    c=1
     M=CpoModel("Sudoku")
     GRNG = range(taille)
 
     var = [[M.integer_var(min=1, max=taille, name="x" + str(l*taille+c)) for l in range(taille)] for c in range(taille)]
-
     # Ajout des contraintes sur les lignes
     for l in GRNG:
         M.add(M.all_diff([var[l][c] for c in GRNG]))
@@ -269,27 +266,26 @@ def lpexl(liste,taille):
             divx=i
     divy=divx
     if divx==0 and divy==0:
+        print("ouais")
         for i in range(2,taille):
             if(taille%i==0 and divx==0):
                 divx=i
         for i in range(2,taille):
             if(taille%i==0 and (divx*i)==taille and divy==0):
                 divy=i
-    
-    
-    # Ajout des contraintes sur les sous grilles
-    ssrng = range(0, taille, divy)
-    for sl in ssrng:
-        for sc in range(0, taille, divx):
-            M.add(M.all_diff([var[l][c] for l in range(sl, sl + divy) for c in range(sc, sc + divx)]))
+    if(divx!=0 or divy!=0):
+        # Ajout des contraintes sur les sous grilles
+        ssrng = range(0, taille, divy)
+        for sl in ssrng:
+            for sc in range(0, taille, divx):
+                M.add(M.all_diff([var[l][c] for l in range(sl, sl + divy) for c in range(sc, sc + divx)]))
     chargez(var,liste,taille)
     msol=M.solve(TimeLimit=10)
     sol=[[msol[var[l][c]] for c in GRNG] for l in GRNG]
     return sol
-        
+
 fen = Fenetre(16)
 
 fen.show()
 
 app.exec_()
- 
