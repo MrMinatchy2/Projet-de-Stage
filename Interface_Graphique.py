@@ -166,9 +166,7 @@ def valideint(sudoku,taille):
         for i in range(2,taille):
             if(taille%i==0 and divx==0):
                 divx=i
-        for i in range(2,taille):
-            if(taille%i==0 and (divx*i)==taille and divy==0):
-                divy=i
+        divy=int(taille/divx)
     if(divx!=0 or divy!=0):
         for i in range(taille):
             l=[]
@@ -266,13 +264,10 @@ def lpexl(liste,taille):
             divx=i
     divy=divx
     if divx==0 and divy==0:
-        print("ouais")
         for i in range(2,taille):
             if(taille%i==0 and divx==0):
                 divx=i
-        for i in range(2,taille):
-            if(taille%i==0 and (divx*i)==taille and divy==0):
-                divy=i
+        divy=int(taille/divx)
     if(divx!=0 or divy!=0):
         # Ajout des contraintes sur les sous grilles
         ssrng = range(0, taille, divy)
@@ -284,7 +279,7 @@ def lpexl(liste,taille):
     sol=[[msol[var[l][c]] for c in GRNG] for l in GRNG]
     return sol
 
-fen = Fenetre(16)
+fen = Fenetre(10)
 
 fen.show()
 
